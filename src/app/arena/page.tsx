@@ -1,6 +1,6 @@
 'use client';
 import Image from "next/image";
-
+import { useSearchParams } from 'next/navigation';
 import Editor from '@monaco-editor/react';
 import { useState, useEffect } from "react";
 
@@ -26,6 +26,9 @@ export default function Arena() {
 
   const [problem, setProblem] = useState<Problem>()
 
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id'); 
+
   // const [state, setState] = useState('fine');
 
   const [report, setReport] = useState<any>();
@@ -42,16 +45,16 @@ export default function Arena() {
   // const [output, setOutput] = useState('');
 
   useEffect(() => {
-        loadData();
+        loadData(id);
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (problemId: any) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}:${process.env.NEXT_PUBLIC_API_PORT}/${process.env.NEXT_PUBLIC_ARENA_PATH}/${process.env.NEXT_PUBLIC_ARENA_PROBLEM}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({ code: code, language: language }),
+        body: JSON.stringify({ id: problemId}),
       })
 
     if(!response.ok){
@@ -185,7 +188,30 @@ export default function Arena() {
                     </tr>
                 ))}
             </tbody>
-        </table>: ''}
+        </table>: 
+        <table className="min-w-full border-collapse border border-gray-300">
+            <thead>
+                <tr>
+                    <th className="border border-gray-300 p-2">Status</th>
+                    <th className="border border-gray-300 p-2">Input</th>
+                    <th className="border border-gray-300 p-2">Output</th>
+                    <th className="border border-gray-300 p-2">Expected</th>
+                    <th className="border border-gray-300 p-2">Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {report?.map((testcase: any, index: number) => (
+                    <tr key={index} className="w-full text-white" style={{backgroundColor: fullPass? 'green': 'red'}}>
+                        <td className="border border-gray-300 p-2">{testcase.status}</td>
+                        <td className="border border-gray-300 p-2">{testcase.input}</td>
+                        <td className="border border-gray-300 p-2">{testcase.output}</td>
+                        <td className="border border-gray-300 p-2">{testcase.expected}</td>
+                        <td className="border border-gray-300 p-2">{testcase.time}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+        }
         </div>
       </div>
     </main>

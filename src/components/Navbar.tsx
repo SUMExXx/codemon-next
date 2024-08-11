@@ -21,7 +21,7 @@ export default function Navbar() {
           <a href="/playground" className="hover:text-gray-300">
             Playground
           </a>
-          <a href="/arena" className="hover:text-gray-300">
+          <a href="/arena?id=1" className="hover:text-gray-300">
             Arena
           </a>
           <a href="/battleground" className="hover:text-gray-300">
